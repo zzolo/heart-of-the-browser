@@ -24,6 +24,22 @@
     .attr('r', Math.min((w / 6), (h / 6)))
     .attr('fill', 'red');
 
+  // Setup rickshaw chart
+  var signalData = [{
+    color: 'red',
+    data: []
+  }];
+  var signal = new Rickshaw.Graph({
+    element: document.querySelector('#signal'),
+    width: w,
+    height: h,
+    renderer: 'line',
+    min: 100,
+    max: 1200,
+    series: signalData
+  });
+  signal.render();
+
   // Handle data from serial
   serialbot.on('data', function(data) {
     var type = data[0];
@@ -31,7 +47,25 @@
     if (type == 'B') {
       beat();
     }
+    else if (type == 'S') {
+      updateSignal(parseInt(data.substring(1), 10));
+    }
   });
+
+  // Update signal
+  function updateSignal(data) {
+    var limit = 300;
+
+    signalData[0].data.push({
+      x: Date.now(),
+      y: data
+    });
+
+    if (signalData[0].data.length > limit) {
+      signalData[0].data.splice(0, signalData[0].data.length - limit);
+    }
+    signal.update();
+  }
 
   // Do a beat
   function beat() {

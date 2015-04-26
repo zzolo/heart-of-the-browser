@@ -1,0 +1,21 @@
+/**
+ * Main CSS for heart of the browser.
+ */
+
+#heart-of-the-browser {
+  position: absolute;
+}
+
+#heart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+#signal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
