@@ -1,0 +1,23 @@
+{
+  "name": "heart-of-the-browser",
+  "version": "0.0.1",
+  "homepage": "https://github.com/zzolo/heart-of-the-browser",
+  "authors": [
+    "Alan Palazzolo <github@zzolo.org>"
+  ],
+  "description": "Heart beat in the browser.",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.5",
+    "underscore": "~1.8.3",
+    "normalize-css": "~3.0.3"
+  }
+}
