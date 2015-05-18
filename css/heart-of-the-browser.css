@@ -4,6 +4,11 @@
 
 #heart-of-the-browser {
   position: absolute;
+  opacity: 0.4;
+}
+
+.valid-signal #heart-of-the-browser {
+  opacity: 1;
 }
 
 #heart {
@@ -13,9 +18,20 @@
   z-index: 10;
 }
 
+#heart circle {
+  fill: red;
+  stroke-width: 5;
+  fill-opacity: 0.92;
+}
+
 #signal {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 5;
+  opacity: 0.9;
+}
+
+#signal svg path {
+  stroke-width: 5;
 }

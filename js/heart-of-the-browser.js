@@ -10,19 +10,23 @@
   var w = window.innerWidth || e.clientWidth || g.clientWidth;
   var h = window.innerHeight || e.clientHeight || g.clientHeight;
 
+  // BPM color scale
+  var bpmScale = d3.scale.linear()
+    .domain([60, 100])
+    .range(['#3366FF', '#B82E00']);
+
   // Connect to SerialBot
   var serialbot = io.connect('//localhost:8899/');
 
   // Setup canvas
-  var svg = d3.select('#heart-of-the-browser')
+  var svg = d3.select('#heart')
     .append('svg').attr('width', w).attr('height', h);
 
   // Create circle for heart
   var heart = svg.append('circle')
     .attr('cx', (w / 2))
     .attr('cy', (h / 2))
-    .attr('r', Math.min((w / 6), (h / 6)))
-    .attr('fill', 'red');
+    .attr('r', Math.min((w / 6), (h / 6)));
 
   // Setup rickshaw chart
   var signalData = [{
@@ -43,12 +47,24 @@
   // Handle data from serial
   serialbot.on('data', function(data) {
     var type = data[0];
+    var d = parseInt(data.substring(1), 10);
 
     if (type == 'B') {
       beat();
+
+      // Color based on beats per minute
+      updateBPM(d);
     }
     else if (type == 'S') {
-      updateSignal(parseInt(data.substring(1), 10));
+      updateSignal(d);
+
+      // If the signal are very low, no signal or incomplete data
+      if (d < 20 || d > 980) {
+        validSignal(false);
+      }
+      else {
+        validSignal(true);
+      }
     }
   });
 
@@ -64,16 +80,34 @@
     if (signalData[0].data.length > limit) {
       signalData[0].data.splice(0, signalData[0].data.length - limit);
     }
+
     signal.update();
   }
 
   // Do a beat
   function beat() {
     var oR = Math.min((w / 6), (h / 6));
-    var nR = Math.min((w / 4), (h / 4));
+    var nR = Math.min((w / 3), (h / 3));
 
     heart
-      .transition().duration(100).attr('r', nR)
-      .transition().duration(100).attr('r', oR);
+      .transition().duration(200).attr('r', nR)
+      .transition().duration(400).attr('r', oR);
+  }
+
+  // Mark as no signal
+  function validSignal(isValid) {
+    d3.select('body').classed('valid-signal', isValid);
+  }
+
+  // Update BPM coloring
+  function updateBPM(bpm) {
+    console.log(bpm);
+    var c = bpmScale(bpm);
+
+    heart.style('fill', c);
+    heart.style('stroke', c);
+
+    signalData[0].color = c;
+    signal.update();
   }
 })();
